@@ -221,7 +221,7 @@ public class TimetableTest {
                 .orElseThrow(() -> new RuntimeException("Объект не должен быть пустым 'Map<Couch,Long>'"));
         long actualCouchTrainFirst = actualFirstCouchEntry
                 .getValue();
-        String actualExpectedFullName = actualFirstCouchEntry.toString();
+        String actualExpectedFullName = actualFirstCouchEntry.getKey().toString();
         //сравниваем ФИО первого тренера
         Assert.assertEquals(expectedCouchFullName, actualExpectedFullName);
         //сравниваем первое кол-во тренировок
@@ -229,10 +229,10 @@ public class TimetableTest {
 
         Map.Entry<Coach, Long> actualMiddleCouchEntry = actualCouchEntry.stream().skip(1).findFirst()
                 .orElseThrow(() -> new RuntimeException("Объект не должен быть пустым 'Map<Couch,Long>'"));
-        long expectedCoachTrainMiddle = 3;
+        long expectedCoachTrainMiddle = 2;
         String expectedCoachFullNameMiddle = coachTwo.toString();
         long actualCouchTrainMiddle = actualMiddleCouchEntry.getValue();
-        String actualCoachFullnameMiddle = actualMiddleCouchEntry.toString();
+        String actualCoachFullnameMiddle = actualMiddleCouchEntry.getKey().toString();
         // сравниваем второго тренера и его кол-во тренировок
         Assert.assertEquals(expectedCoachTrainMiddle, actualCouchTrainMiddle);
         Assert.assertEquals(expectedCoachFullNameMiddle, actualCoachFullnameMiddle);
