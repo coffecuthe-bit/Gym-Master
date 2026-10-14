@@ -240,11 +240,70 @@ public class TimetableTest {
         Coach actualSecondCoach = actualSecondCoachEntry.getKey();
         //сравниваем крайнего тренера и его кол-во тренировок
         Assert.assertEquals(expectedCoachTrainSecond, actualCoachTrainSecond);
-
         Assert.assertEquals(coachThree, actualSecondCoach);
 
     }
 
+    @Test
+    public void testGetTrainingSessionMultiplySessionInTime() {
+        Timetable timetable = new Timetable();
+        Coach coachOne = new Coach("Васильев", "Николай", "Сергеевич");
+        Coach coachTwo = new Coach("Семёнов", "Виктор", "Константинович");
+        Group groupChild = new Group("Акробатика для детей", Age.CHILD, 60);
+        Group groupAdult = new Group("Акробатика для взрослых", Age.ADULT, 90);
+        TimeOfDay time = new TimeOfDay(13, 0);
+
+        TrainingSession first = new TrainingSession(groupChild, coachOne, DayOfWeek.MONDAY, time);
+        TrainingSession second = new TrainingSession(groupAdult, coachTwo, DayOfWeek.MONDAY, time);
+
+        timetable.addNewTrainingSession(first);
+        timetable.addNewTrainingSession(second);
+
+        Set<TrainingSession> sessions = timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, time);
+
+        Assert.assertEquals(2, sessions.size());
+        Assert.assertTrue(sessions.contains(first));
+        Assert.assertTrue(sessions.contains(second));
+    }
+
+    @Test
+    public void testGetTrainingSessionsForDayEmptyTimetable() {
+        Timetable timetable = new Timetable();
+
+        Map<TimeOfDay, Set<TrainingSession>> monday =
+                timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
+        Assert.assertNotNull(monday);
+        Assert.assertTrue(monday.isEmpty());
+
+        Set<TrainingSession> mondayAtThirteen =
+                timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, new TimeOfDay(13, 0));
+        Assert.assertNotNull(mondayAtThirteen);
+        Assert.assertTrue(mondayAtThirteen.isEmpty());
+
+        Map<Coach, Long> counts = timetable.getCountByCoaches();
+        Assert.assertNotNull(counts);
+        Assert.assertTrue(counts.isEmpty());
+    }
+
+    @Test
+    public void testGetCountByCoachesGroupsAndDays() {
+        Timetable timetable = new Timetable();
+        Coach coach = new Coach("Васильев", "Николай", "Сергеевич");
+        Group groupChild = new Group("Акробатика для детей", Age.CHILD, 60);
+        Group groupAdult = new Group("Акробатика для взрослых", Age.ADULT, 90);
+
+        timetable.addNewTrainingSession(new TrainingSession(groupChild, coach,
+                DayOfWeek.MONDAY, new TimeOfDay(13, 0)));
+        timetable.addNewTrainingSession(new TrainingSession(groupChild, coach,
+                DayOfWeek.WEDNESDAY, new TimeOfDay(13, 0)));
+        timetable.addNewTrainingSession(new TrainingSession(groupAdult, coach,
+                DayOfWeek.FRIDAY, new TimeOfDay(20, 0)));
+
+        Map<Coach, Long> counts = timetable.getCountByCoaches();
+
+        Assert.assertEquals(1, counts.size());
+        Assert.assertEquals(Long.valueOf(3), counts.get(coach));
+    }
 }
 
 
