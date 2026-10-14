@@ -6,33 +6,33 @@ import java.util.stream.Collectors;
 
 public class Timetable {
 
-    private HashMap<DayOfWeek, HashMap<TimeOfDay, Set<TrainingSession>>> timetable = new HashMap<>();
+    private final HashMap<DayOfWeek, TreeMap<TimeOfDay, Set<TrainingSession>>> timetable = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
-        timetable.computeIfAbsent(trainingSession.getDayOfWeek(), k -> new HashMap<>())
+        timetable.computeIfAbsent(trainingSession.getDayOfWeek(), k -> new TreeMap<>())
                 .computeIfAbsent(trainingSession.getTimeOfDay(), k -> new HashSet<>())
                 .add(trainingSession);
     }
 
     //как реализовать, тоже непонятно, но сложность должна быть О(1)
-    public HashMap<TimeOfDay, Set<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        return timetable.getOrDefault(dayOfWeek, new HashMap<>());
+    public Map<TimeOfDay, Set<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
+        return timetable.getOrDefault(dayOfWeek, new TreeMap<>());
     }
 
     //как реализовать, тоже непонятно, но сложность должна быть О(1)
     public Set<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
-        return timetable.getOrDefault(dayOfWeek, new HashMap<>())
+        return timetable.getOrDefault(dayOfWeek, new TreeMap<>())
                 .getOrDefault(timeOfDay, new HashSet<>());
     }
 
     //лучше всего o log(n)
     //
-    public Map<Coach, Long> getCountByCoaches() {
+    public LinkedHashMap<Coach, Long> getCountByCoaches() {
         Map<Coach, Long> dirtyCoach = getAllCoachByWeek();
         return sortCoach(dirtyCoach);
     }
-    private Map<Coach, Long> sortCoach(Map<Coach, Long> dirtyCoach) {
-        Map<Coach, Long> coachMap = new LinkedHashMap<>();
+    private LinkedHashMap<Coach, Long> sortCoach(Map<Coach, Long> dirtyCoach) {
+        LinkedHashMap<Coach, Long> coachMap = new LinkedHashMap<>();
         dirtyCoach.entrySet()
                 .stream()
                 .sorted((a, b) -> b.getValue().compareTo(a.getValue()))

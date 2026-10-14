@@ -2,7 +2,7 @@ package com.gym.master;
 
 import java.util.Objects;
 
-public class TimeOfDay {
+public class TimeOfDay implements Comparable<TimeOfDay> {
 
     //часы (от 0 до 23)
     private int hours;
@@ -33,11 +33,17 @@ public class TimeOfDay {
 
     @Override
     public String toString() {
-        return this.minutes < 10 ? this.getHours() + ":0" + this.minutes : this.getHours() + ":" + this.minutes;
+        return String.format("%02d:%02d", hours, minutes);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(hours, minutes);
+    }
+
+    @Override
+    public int compareTo(TimeOfDay o) {
+        int hourCompare = Integer.compare(hours, o.hours);
+        return hourCompare != 0 ? hourCompare : Integer.compare(minutes, o.minutes);
     }
 }
