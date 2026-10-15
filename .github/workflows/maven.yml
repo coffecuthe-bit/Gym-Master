@@ -41,4 +41,4 @@ jobs:
 
       - name: Update dependency graph
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: advanced-security/maven-dependency-submission-action@<актуальный_sha>
+        uses: advanced-security/maven-dependency-submission-action@v6
