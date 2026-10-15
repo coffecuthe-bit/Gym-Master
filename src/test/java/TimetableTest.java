@@ -241,7 +241,7 @@ public class TimetableTest {
         //сравниваем крайнего тренера и его кол-во тренировок
         Assert.assertEquals(expectedCoachTrainSecond, actualCoachTrainSecond);
         Assert.assertEquals(coachThree, actualSecondCoach);
-
+        Assert.assertEquals(null, actualSecondCoach);
     }
 
     @Test
