@@ -1,0 +1,44 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  checks: write          # нужно для публикации отчётов тестов
+  pull-requests: write   # чтобы комментить в PR
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run tests
+        run: mvn -B test --file pom.xml
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v5
+        if: always()   # важно: покажет отчёт даже если тесты упали
+        with:
+          report_paths: '**/target/surefire-reports/TEST-*.xml'
+          include_passed: true
+
+      - name: Build with Maven
+        run: mvn -B package -DskipTests --file pom.xml
+
+      - name: Update dependency graph
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: advanced-security/maven-dependency-submission-action@v6
